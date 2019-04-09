@@ -1,11 +1,16 @@
 ---
-
-- name: restart tinc
-  service: >
-    name=tinc
-    state=restarted
+# vim:ts=2:sw=2:et:ai:sts=2
 
 - name: reload tinc
-  service: >
-    name=tinc
-    state=reloaded
+  service:
+    name: "{{ tinc__service_name }}"
+    state: reloaded
+
+- name: restart tinc
+  service:
+    name: "{{ tinc__service_name }}"
+    state: restarted
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes

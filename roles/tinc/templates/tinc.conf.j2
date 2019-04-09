@@ -1,8 +1,10 @@
 Name = {{ inventory_hostname }}
-AddressFamily = ipv4
-Interface = {{ vpn_interface }}
+#AddressFamily = ipv4
+Interface = {{ tinc__vpn_interface }}
 {% for host in play_hosts %}
-{% if inventory_hostname != hostvars[host]['inventory_hostname'] %}
+{% if inventory_hostname != hostvars[host]['inventory_hostname'] and
+      hostvars[host]['tinc__allow_incoming_connections']|d(True, boolean=False)
+%}
 ConnectTo = {{ hostvars[host]['inventory_hostname'] }}
 {% endif %}
 {% endfor %}

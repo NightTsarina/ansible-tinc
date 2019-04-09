@@ -1,2 +1,5 @@
 #!/bin/sh
-ifconfig {{ vpn_interface }} down
+{% for ADDR in tinc__vpn_addresses %}
+/sbin/ip addr del dev {{ tinc__vpn_interface }} {{ ADDR }}
+{% endfor %}
+/sbin/ip link set dev {{ tinc__vpn_interface }} down
