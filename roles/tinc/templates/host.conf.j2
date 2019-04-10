@@ -5,4 +5,4 @@ Address = {{ tinc__public_addr }} {{ tinc__port }}
 Subnet = {{ item }}
 {% endfor %}
 
-{{ public_key.stdout }}
+{{ tinc__public_key.stdout }}

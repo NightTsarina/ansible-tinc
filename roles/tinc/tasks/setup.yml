@@ -87,10 +87,10 @@
   command: >-
     awk '/^-----BEGIN RSA PUBLIC KEY-----$/,/^-----END RSA PUBLIC KEY-----$/'
     /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
-  register: public_key
+  register: tinc__public_key
   changed_when: >
-    not public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
-  failed_when: public_key.rc not in (0, 1, 2)
+    not tinc__public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
+  failed_when: tinc__public_key.rc not in (0, 1, 2)
 
 - name: set host parameters
   template:
@@ -104,15 +104,15 @@
   file:
     path: /etc/tinc/{{ tinc__netname }}/rsa_key.priv
     state: absent
-  when: public_key.changed
+  when: tinc__public_key.changed
   notify:
     - restart tinc
 
 - name: delete private key and regenerate keypair
-  shell: tincd -n {{ tinc__netname }} -K4096
+  command: tincd -n {{ tinc__netname }} -K4096
   args:
     creates: /etc/tinc/{{ tinc__netname }}/rsa_key.priv
-  when: public_key.changed
+  when: tinc__public_key.changed
   notify:
     - restart tinc
 
