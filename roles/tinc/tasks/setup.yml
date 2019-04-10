@@ -116,6 +116,18 @@
   notify:
     - restart tinc
 
+- name: find obsolete tinc host files
+  command: ls /etc/tinc/{{ tinc__netname }}/hosts/
+  register: tinc__host_files
+  changed_when: False
+
+- name: remove obsolete tinc host files
+  file:
+    path: /etc/tinc/{{ tinc__netname }}/hosts/{{ item }}
+    state: absent
+  with_items: '{{ tinc__host_files.stdout_lines }}'
+  when: item not in hostvars or hostvars[item].get('tinc__remove', False)
+
 - name: fetch tinc hosts file after key creation
   fetch:
     src: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
