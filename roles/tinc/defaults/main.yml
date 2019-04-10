@@ -4,6 +4,7 @@
 # Per-host
 tinc__public_addr: "{{ ansible_host }}"
 tinc__port: 655
+tinc__allow_incoming_connections: True
 
 tinc__netname: tinc
 tinc__vpn_interface: "{{ tinc__netname }}"

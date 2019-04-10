@@ -87,9 +87,10 @@
   command: >-
     awk '/^-----BEGIN RSA PUBLIC KEY-----$/,/^-----END RSA PUBLIC KEY-----$/'
     /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
+  register: public_key
   changed_when: >
     not public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
-  register: public_key
+  failed_when: public_key.rc not in (0, 1, 2)
 
 - name: set host parameters
   template:

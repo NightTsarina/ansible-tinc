@@ -1,6 +1,16 @@
 ---
 # vim:ts=2:sw=2:et:ai:sts=2
 
+- name: check tinc uses systemd units
+  stat:
+    path: /lib/systemd/system/tinc@.service
+  register: tinc__tinc_unit
+
+- name: set fact about systemd unit
+  set_fact:
+    tinc__use_systemd: False
+  when: not tinc__tinc_unit.stat.exists
+
 - name: stop and disable tinc
   service:
     name: "{{ tinc__service_name }}"
