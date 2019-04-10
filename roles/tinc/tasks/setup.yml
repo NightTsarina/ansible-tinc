@@ -119,12 +119,12 @@
 - name: fetch tinc hosts file after key creation
   fetch:
     src: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
-    dest: fetch/{{ inventory_hostname }}
+    dest: fetch/{{ tinc__netname }}/{{ inventory_hostname }}
     flat: yes
 
 - name: sync the fetched tinc hosts files on each host
   copy:
-    src: fetch/
+    src: fetch/{{ tinc__netname }}/
     dest: /etc/tinc/{{ tinc__netname }}/hosts/
   notify:
     - reload tinc

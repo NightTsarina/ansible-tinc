@@ -4,7 +4,9 @@ Interface = {{ tinc__vpn_interface }}
 {% for host in play_hosts %}
 {% if inventory_hostname != hostvars[host]['inventory_hostname'] and
       hostvars[host].get('tinc__allow_incoming_connections', True) and
-      not hostvars[host].get('tinc__remove', False)
+      not hostvars[host].get('tinc__remove', False) and
+      hostvars[inventory_hostname].get('tinc__netname') ==
+      hostvars[host].get('tinc__netname')
 %}
 ConnectTo = {{ hostvars[host]['inventory_hostname'] }}
 {% endif %}
