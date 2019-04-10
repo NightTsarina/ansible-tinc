@@ -2,9 +2,10 @@
 Name = {{ inventory_hostname }}
 #AddressFamily = ipv4
 Interface = {{ tinc__vpn_interface }}
-{% for host in play_hosts %}
+{% for host in hostvars %}
 {% if inventory_hostname != hostvars[host]['inventory_hostname'] and
       hostvars[host].get('tinc__allow_incoming_connections', True) and
+      hostvars[host].get('tinc__vpn_addresses', False) and
       not hostvars[host].get('tinc__remove', False) and
       hostvars[inventory_hostname].get('tinc__netname') ==
       hostvars[host].get('tinc__netname')

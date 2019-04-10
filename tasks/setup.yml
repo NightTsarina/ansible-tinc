@@ -138,6 +138,7 @@
   copy:
     src: fetch/{{ tinc__netname }}/
     dest: /etc/tinc/{{ tinc__netname }}/hosts/
+    mode: 0644
   notify:
     - reload tinc
 
