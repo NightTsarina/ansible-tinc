@@ -1,4 +1,6 @@
 #!/bin/sh
+# {{ ansible_managed }}
+
 /sbin/ip link set dev {{ tinc__vpn_interface }} up
 {% for ADDR in tinc__vpn_addresses %}
 /sbin/ip addr add dev {{ tinc__vpn_interface }} {{ ADDR }}

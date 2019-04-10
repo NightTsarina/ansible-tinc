@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 Address = {{ tinc__public_addr }} {{ tinc__port }}
 {% for item in (
         (tinc__vpn_local_subnets or []) + (tinc__vpn_extra_subnets or [])
