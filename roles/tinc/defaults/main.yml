@@ -17,3 +17,6 @@ tinc__vpn_local_subnets:
 
 # Extra networks to export.
 tinc__vpn_extra_subnets:
+
+# Set to True to disable and remove tinc from a host.
+tinc__remove: False

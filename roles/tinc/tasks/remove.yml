@@ -17,3 +17,17 @@
     dest: /etc/tinc/nets.boot
     line: "{{ tinc__netname }}"
     state: absent
+
+- name: delete systemd unit override
+  file:
+    path: /etc/systemd/system/{{ tinc__service_name }}.service.d/override.conf
+    state: absent
+  notify:
+    - reload systemd
+  when: tinc__use_systemd
+
+- name: delete local configuration copy
+  local_action:
+    module: file
+    path: fetch/{{ inventory_hostname }}
+    state: absent

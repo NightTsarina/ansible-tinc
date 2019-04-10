@@ -1,0 +1,142 @@
+---
+# vim:ts=2:sw=2:et:ai:sts=2
+
+- name: install tinc
+  package:
+    name: tinc
+    state: latest
+
+- name: check tinc uses systemd units
+  stat:
+    path: /lib/systemd/system/tinc@.service
+  register: tinc__tinc_unit
+
+- name: set fact about systemd unit
+  set_fact:
+    tinc__use_systemd: False
+  when: not tinc__tinc_unit.stat.exists
+
+- name: ensure tinc systemd directory exists
+  file:
+    path: /etc/systemd/system/{{ tinc__service_name }}.service.d
+    recurse: True
+    state: directory
+  when: tinc__use_systemd
+
+- name: add systemd unit override
+  copy:
+    dest: /etc/systemd/system/{{ tinc__service_name }}.service.d/override.conf
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/sbin/tincd -n %i -D -d -L
+  notify:
+    - reload systemd
+  when: tinc__use_systemd
+
+- name: set daemon parameters in /etc/default/tinc
+  lineinfile:
+    dest: /etc/default/tinc
+    line: "EXTRA='-d -L'"
+    regexp: '^EXTRA\s*='
+    insertbefore: BOF
+    create: no
+  notify:
+    - restart tinc
+  when: not tinc__use_systemd
+
+- name: ensure tinc network directory exists
+  file:
+    path: /etc/tinc/{{ tinc__netname }}/hosts
+    recurse: True
+    state: directory
+
+- name: add network to /etc/tinc/nets.boot
+  lineinfile:
+    dest: etc/tinc/nets.boot
+    line: "{{ tinc__netname }}"
+    create: yes
+  notify:
+    - restart tinc
+  when: not tinc__use_systemd
+
+- name: create tinc.conf file from template
+  template:
+    src: tinc.conf.j2
+    dest: /etc/tinc/{{ tinc__netname }}/tinc.conf
+  notify:
+    - reload tinc
+
+- name: create tinc-up file
+  template:
+    src: tinc-up.j2
+    dest: /etc/tinc/{{ tinc__netname }}/tinc-up
+    mode: 0755
+  notify:
+    - restart tinc
+
+- name: create tinc-down file
+  template:
+    src: tinc-down.j2
+    dest: /etc/tinc/{{ tinc__netname }}/tinc-down
+    mode: 0755
+  notify:
+    - restart tinc
+
+- name: check for crypto key pair
+  command: >-
+    awk '/^-----BEGIN RSA PUBLIC KEY-----$/,/^-----END RSA PUBLIC KEY-----$/'
+    /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
+  changed_when: >
+    not public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
+  register: public_key
+
+- name: set host parameters
+  template:
+    src: host.conf.j2
+    dest: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
+  notify:
+    - restart tinc
+
+# this is necessary because the public key will not be generated (non-interactively) if the private key already exists
+- name: delete private key and regenerate keypair
+  file:
+    path: /etc/tinc/{{ tinc__netname }}/rsa_key.priv
+    state: absent
+  when: public_key.changed
+  notify:
+    - restart tinc
+
+- name: delete private key and regenerate keypair
+  shell: tincd -n {{ tinc__netname }} -K4096
+  args:
+    creates: /etc/tinc/{{ tinc__netname }}/rsa_key.priv
+  when: public_key.changed
+  notify:
+    - restart tinc
+
+- name: fetch tinc hosts file after key creation
+  fetch:
+    src: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
+    dest: fetch/{{ inventory_hostname }}
+    flat: yes
+
+- name: sync the fetched tinc hosts files on each host
+  copy:
+    src: fetch/
+    dest: /etc/tinc/{{ tinc__netname }}/hosts/
+  notify:
+    - reload tinc
+
+- name: ensure tinc meta-service is started
+  service:
+    name: tinc
+    enabled: yes
+    state: started
+  when: tinc__use_systemd
+
+- name: ensure tinc is started
+  service:
+    name: "{{ tinc__service_name }}"
+    enabled: yes
+    state: started

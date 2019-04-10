@@ -1,8 +1,0 @@
----
-# vim:ts=2:sw=2:et:ai:sts=2
-
-tinc__use_systemd: >
-    {{ True if (ansible_service_mgr|d() and ansible_service_mgr == "systemd")
-       else False }}
-tinc__service_name: >
-    {{ "tinc@" + tinc__netname if tinc__use_systemd else "tinc" }}
