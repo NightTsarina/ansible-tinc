@@ -53,7 +53,7 @@
 
 - name: add network to /etc/tinc/nets.boot
   lineinfile:
-    dest: etc/tinc/nets.boot
+    dest: /etc/tinc/nets.boot
     line: "{{ tinc__netname }}"
     create: yes
   notify:
