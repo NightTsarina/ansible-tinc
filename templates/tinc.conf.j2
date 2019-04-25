@@ -2,14 +2,13 @@
 Name = {{ inventory_hostname }}
 #AddressFamily = ipv4
 Interface = {{ tinc__vpn_interface }}
-{% for host in hostvars %}
-{% if inventory_hostname != hostvars[host]['inventory_hostname'] and
-      hostvars[host].get('tinc__allow_incoming_connections', True) and
-      hostvars[host].get('tinc__vpn_addresses', False) and
-      not hostvars[host].get('tinc__remove', False) and
-      hostvars[inventory_hostname].get('tinc__netname') ==
-      hostvars[host].get('tinc__netname')
+{% for host, config in tinc__hostvars.items() %}
+{% if inventory_hostname != host and (
+        config.tinc__allow_incoming_connections
+        if config.tinc__allow_incoming_connections is not none else True) and
+      not config.tinc__remove and
+      tinc__netname == (config.tinc__netname or tinc__netname)
 %}
-ConnectTo = {{ hostvars[host]['inventory_hostname'] }}
+ConnectTo = {{ host }}
 {% endif %}
 {% endfor %}

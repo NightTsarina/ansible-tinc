@@ -1,12 +1,32 @@
 ---
 # vim:ts=2:sw=2:et:ai:sts=2
 
+# Set to True to disable and remove tinc from a host.
+tinc__remove: False
+
+tinc__netname: tinc
+
+# Configuration for hosts not present in the ansible inventory.
+# Format:
+#  tinc__external_hosts:
+#    windows_host1:
+#      tinc__public_address: 1.2.3.4
+#      tinc__vpn_addresses:
+#        - 192.168.128.1/32
+#      tinc__allow_incoming_connections: True
+#      tinc__host_conf: |
+#        Address = 1.2.3.4
+#        Subnet = 192.168.128.1/32
+#
+#        -----BEGIN RSA PUBLIC KEY-----
+#        ...
+tinc__external_hosts: {}
+
 # Per-host
 tinc__public_addr: "{{ ansible_host }}"
 tinc__port: 655
 tinc__allow_incoming_connections: True
 
-tinc__netname: tinc
 tinc__vpn_interface: "{{ tinc__netname }}"
 
 # IP addresses to assign to the VPN interface.
@@ -18,6 +38,3 @@ tinc__vpn_local_subnets:
 
 # Extra networks to export.
 tinc__vpn_extra_subnets:
-
-# Set to True to disable and remove tinc from a host.
-tinc__remove: False

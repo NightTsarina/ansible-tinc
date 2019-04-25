@@ -126,13 +126,23 @@
     path: /etc/tinc/{{ tinc__netname }}/hosts/{{ item }}
     state: absent
   with_items: '{{ tinc__host_files.stdout_lines }}'
-  when: item not in hostvars or hostvars[item].get('tinc__remove', False)
+  when: >-
+    item not in tinc__hostvars or tinc__hostvars[item].tinc__remove
 
 - name: fetch tinc hosts file after key creation
   fetch:
     src: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
     dest: fetch/{{ tinc__netname }}/{{ inventory_hostname }}
     flat: yes
+
+- name: create tinc hosts file for hosts outside of ansible
+  copy:
+    dest: /etc/tinc/{{ item.value.tinc__netname }}/hosts/{{ item.key }}
+    content: '{{ item.value.tinc__host_conf }}'
+  with_dict: '{{ tinc__external_hosts }}'
+  when: >-
+    item.value.tinc__host_conf is defined and
+    item.value.tinc__netname is defined
 
 - name: sync the fetched tinc hosts files on each host
   copy:

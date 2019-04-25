@@ -1,20 +1,28 @@
 ---
 # vim:ts=2:sw=2:et:ai:sts=2
-tinc__other_hosts: >-
-   {{
-     hostvars.values() |
-     selectattr('inventory_hostname', 'ne', inventory_hostname) |
-     selectattr('tinc__vpn_addresses', 'defined') |
-     selectattr('tinc__public_addr', 'defined') |
-     map(attribute='tinc__public_addr') |
-     list
-   +
-     hostvars.values() |
-     selectattr('inventory_hostname', 'ne', inventory_hostname) |
-     selectattr('tinc__vpn_addresses', 'defined') |
-     selectattr('tinc__public_addr', 'undefined') |
-     map(attribute='ansible_host') |
-     list
+tinc__hostvars: >-
+  {{ dict(hostvars) | combine(tinc__external_hosts) | dict2items | json_query(
+  '[?value.tinc__vpn_addresses].{
+    "key": key,
+    "value": {
+      "tinc__host": key,
+      "tinc__public_addr": value.tinc__public_addr || value.ansible_host,
+      "tinc__vpn_addresses": value.tinc__vpn_addresses,
+      "tinc__allow_incoming_connections": value.tinc__allow_incoming_connections,
+      "tinc__remove": value.tinc__remove,
+      "tinc__netname": value.tinc__netname
+      }
+    }
+  ') | items2dict
+  }}
+
+tinc__other_public_addresses: >-
+  {{
+    tinc__hostvars.values() |
+    selectattr('tinc__host', 'ne', inventory_hostname) |
+    selectattr('tinc__public_addr', 'defined') |
+    map(attribute='tinc__public_addr') |
+    list
    }}
 
 tinc__use_systemd: >-
