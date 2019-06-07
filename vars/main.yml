@@ -6,7 +6,7 @@ tinc__hostvars: >-
     "key": key,
     "value": {
       "tinc__host": key,
-      "tinc__public_addr": value.tinc__public_addr || value.ansible_host,
+      "tinc__public_addresses": value.tinc__public_addresses || [value.ansible_host],
       "tinc__vpn_addresses": value.tinc__vpn_addresses,
       "tinc__allow_incoming_connections": value.tinc__allow_incoming_connections,
       "tinc__remove": value.tinc__remove,
@@ -20,9 +20,10 @@ tinc__other_public_addresses: >-
   {{
     tinc__hostvars.values() |
     selectattr('tinc__host', 'ne', inventory_hostname) |
-    selectattr('tinc__public_addr', 'defined') |
-    map(attribute='tinc__public_addr') |
-    list
+    selectattr('tinc__public_addresses', 'defined') |
+    map(attribute='tinc__public_addresses') |
+    list |
+    sum(start=[])
    }}
 
 tinc__use_systemd: >-

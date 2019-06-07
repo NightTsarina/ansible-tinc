@@ -10,7 +10,8 @@ tinc__netname: tinc
 # Format:
 #  tinc__external_hosts:
 #    windows_host1:
-#      tinc__public_address: 1.2.3.4
+#      tinc__public_addresses:
+#        - 1.2.3.4
 #      tinc__vpn_addresses:
 #        - 192.168.128.1/32
 #      tinc__allow_incoming_connections: True
@@ -23,7 +24,7 @@ tinc__netname: tinc
 tinc__external_hosts: {}
 
 # Per-host
-tinc__public_addr: "{{ ansible_host }}"
+tinc__public_addresses: "{{ [ansible_host] }}"
 tinc__port: 655
 tinc__allow_incoming_connections: True
 
