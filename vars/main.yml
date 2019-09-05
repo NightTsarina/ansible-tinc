@@ -22,7 +22,7 @@ tinc__other_public_addresses: >-
     selectattr('tinc__host', 'ne', inventory_hostname) |
     selectattr('tinc__public_addresses', 'defined') |
     map(attribute='tinc__public_addresses') |
-    list |
+    sort |
     sum(start=[])
    }}
 
