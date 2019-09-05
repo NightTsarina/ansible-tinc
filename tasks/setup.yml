@@ -91,6 +91,7 @@
   changed_when: >
     not tinc__public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
   failed_when: tinc__public_key.rc not in (0, 1, 2)
+  check_mode: no
 
 - name: set host parameters
   template:
@@ -120,6 +121,7 @@
   command: ls /etc/tinc/{{ tinc__netname }}/hosts/
   register: tinc__host_files
   changed_when: False
+  check_mode: no
 
 - name: remove obsolete tinc host files
   file:
