@@ -67,19 +67,16 @@
   notify:
     - reload tinc
 
-- name: create tinc-up file
+- name: create network configuration scripts
   template:
-    src: tinc-up.j2
-    dest: /etc/tinc/{{ tinc__netname }}/tinc-up
+    src: '{{ item }}.j2'
+    dest: /etc/tinc/{{ tinc__netname }}/{{ item }}
     mode: 0755
-  notify:
-    - restart tinc
-
-- name: create tinc-down file
-  template:
-    src: tinc-down.j2
-    dest: /etc/tinc/{{ tinc__netname }}/tinc-down
-    mode: 0755
+  loop:
+    - tinc-up
+    - tinc-down
+    - subnet-up
+    - subnet-down
   notify:
     - restart tinc
 
