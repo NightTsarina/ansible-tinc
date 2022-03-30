@@ -2,7 +2,7 @@
 Name = {{ inventory_hostname }}
 #AddressFamily = ipv4
 Interface = {{ tinc__vpn_interface }}
-{% for host, config in tinc__hostvars.items() %}
+{% for host, config in tinc__hostvars | dictsort %}
 {% if inventory_hostname != host and (
         config.tinc__allow_incoming_connections
         if config.tinc__allow_incoming_connections is not none else True) and
