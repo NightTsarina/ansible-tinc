@@ -16,24 +16,6 @@
     tinc__use_systemd: False
   when: not tinc__tinc_unit.stat.exists
 
-- name: ensure tinc systemd directory exists
-  file:
-    path: /etc/systemd/system/{{ tinc__service_name }}.service.d
-    recurse: True
-    state: directory
-  when: tinc__use_systemd
-
-- name: add systemd unit override
-  copy:
-    dest: /etc/systemd/system/{{ tinc__service_name }}.service.d/override.conf
-    content: |
-      [Service]
-      ExecStart=
-      ExecStart=/usr/sbin/tincd -n %i -D -d -L
-  notify:
-    - reload systemd
-  when: tinc__use_systemd
-
 - name: set daemon parameters in /etc/default/tinc
   lineinfile:
     dest: /etc/default/tinc
@@ -43,7 +25,6 @@
     create: no
   notify:
     - restart tinc
-  when: not tinc__use_systemd
 
 - name: ensure tinc network directory exists
   file:
