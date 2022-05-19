@@ -144,3 +144,13 @@
     name: "{{ tinc__service_name }}"
     enabled: yes
     state: started
+
+- name: install ferm configuration
+  template:
+    src: ferm.conf.j2
+    dest: /etc/ferm/ferm.d/tinc.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload ferm
+  when: tinc__install_ferm_svc and tinc__allow_incoming_connections
