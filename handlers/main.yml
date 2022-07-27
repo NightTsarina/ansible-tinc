@@ -14,3 +14,8 @@
 - name: reload systemd
   systemd:
     daemon_reload: yes
+
+- name: reload ferm
+  service:
+    name: ferm
+    state: reloaded
