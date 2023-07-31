@@ -1,8 +1,8 @@
 ---
 # vim:ts=2:sw=2:et:ai:sts=2
 
-- include: remove.yml
+- include_tasks: remove.yml
   when: tinc__remove
 
-- include: setup.yml
+- include_tasks: setup.yml
   when: not tinc__remove
