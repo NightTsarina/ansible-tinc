@@ -150,7 +150,7 @@
     src: ferm.conf.j2
     dest: /etc/ferm/ferm.d/tinc.conf
     owner: root
-    group: root
+    group: adm
     mode: 0644
   notify: reload ferm
   when: tinc__install_ferm_svc and tinc__allow_incoming_connections
