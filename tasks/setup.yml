@@ -36,6 +36,7 @@
   lineinfile:
     dest: /etc/tinc/nets.boot
     line: "{{ tinc__netname }}"
+    mode: '0644'
     create: true
   notify:
     - restart tinc
@@ -45,6 +46,7 @@
   template:
     src: tinc.conf.j2
     dest: /etc/tinc/{{ tinc__netname }}/tinc.conf
+    mode: '0644'
   notify:
     - reload tinc
 
@@ -75,6 +77,7 @@
   template:
     src: host.conf.j2
     dest: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
+    mode: '0644'
   notify:
     - restart tinc
 
@@ -119,6 +122,7 @@
   copy:
     dest: /etc/tinc/{{ item.value.tinc__netname }}/hosts/{{ item.key }}
     content: '{{ item.value.tinc__host_conf }}'
+    mode: '0644'
   with_dict: '{{ tinc__external_hosts }}'
   when: >-
     item.value.tinc__host_conf is defined and
