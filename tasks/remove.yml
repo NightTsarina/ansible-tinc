@@ -8,13 +8,13 @@
 
 - name: set fact about systemd unit
   set_fact:
-    tinc__use_systemd: False
+    tinc__use_systemd: false
   when: not tinc__tinc_unit.stat.exists
 
 - name: stop and disable tinc
   service:
     name: "{{ tinc__service_name }}"
-    enabled: no
+    enabled: false
     state: stopped
 
 - name: delete tinc netname directory

@@ -13,7 +13,7 @@
 
 - name: set fact about systemd unit
   set_fact:
-    tinc__use_systemd: False
+    tinc__use_systemd: false
   when: not tinc__tinc_unit.stat.exists
 
 - name: set daemon parameters in /etc/default/tinc
@@ -22,21 +22,21 @@
     line: "EXTRA='-d -L'"
     regexp: '^EXTRA\s*='
     insertbefore: BOF
-    create: no
+    create: false
   notify:
     - restart tinc
 
 - name: ensure tinc network directory exists
   file:
     path: /etc/tinc/{{ tinc__netname }}/hosts
-    recurse: True
+    recurse: true
     state: directory
 
 - name: add network to /etc/tinc/nets.boot
   lineinfile:
     dest: /etc/tinc/nets.boot
     line: "{{ tinc__netname }}"
-    create: yes
+    create: true
   notify:
     - restart tinc
   when: not tinc__use_systemd
@@ -69,7 +69,7 @@
   changed_when: >
     not tinc__public_key.stdout.endswith('-----END RSA PUBLIC KEY-----')
   failed_when: tinc__public_key.rc not in (0, 1, 2)
-  check_mode: no
+  check_mode: false
 
 - name: set host parameters
   template:
@@ -98,8 +98,8 @@
 - name: find obsolete tinc host files
   command: ls /etc/tinc/{{ tinc__netname }}/hosts/
   register: tinc__host_files
-  changed_when: False
-  check_mode: no
+  changed_when: false
+  check_mode: false
 
 - name: remove obsolete tinc host files
   file:
@@ -113,7 +113,7 @@
   fetch:
     src: /etc/tinc/{{ tinc__netname }}/hosts/{{ inventory_hostname }}
     dest: fetch/{{ tinc__netname }}/{{ inventory_hostname }}
-    flat: yes
+    flat: true
 
 - name: create tinc hosts file for hosts outside of ansible
   copy:
@@ -135,14 +135,14 @@
 - name: ensure tinc meta-service is started
   service:
     name: tinc
-    enabled: yes
+    enabled: true
     state: started
   when: tinc__use_systemd
 
 - name: ensure tinc is started
   service:
     name: "{{ tinc__service_name }}"
-    enabled: yes
+    enabled: true
     state: started
 
 - name: install ferm configuration
