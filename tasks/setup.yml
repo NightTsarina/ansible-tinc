@@ -4,7 +4,7 @@
 - name: install tinc
   package:
     name: tinc
-    state: latest
+    state: present
 
 - name: check tinc uses systemd units
   stat:
