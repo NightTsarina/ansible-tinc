@@ -4,5 +4,5 @@
 echo "subnet-down for $NODE/$NETNAME" >&2
 
 if [ "$NODE" != "$NAME" ]; then
-    /sbin/ip route del $SUBNET dev $INTERFACE
+    {{ tinc__iproute2_path }} route del $SUBNET dev $INTERFACE
 fi

@@ -42,3 +42,6 @@ tinc__vpn_extra_subnets:
 
 # Install ferm service configuration file.
 tinc__install_ferm_svc: false
+
+# Command paths.
+tinc__iproute2_path: /usr/bin/ip
