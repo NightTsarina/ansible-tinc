@@ -1,8 +1,8 @@
 ---
 # vim:ts=2:sw=2:et:ai:sts=2
 
-- include_tasks: remove.yml  # noqa: name[missing]
+- ansible.builtin.include_tasks: remove.yml  # noqa: name[missing]
   when: tinc__remove
 
-- include_tasks: setup.yml   # noqa: name[missing]
+- ansible.builtin.include_tasks: setup.yml   # noqa: name[missing]
   when: not tinc__remove
