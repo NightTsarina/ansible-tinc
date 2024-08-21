@@ -52,7 +52,7 @@
   template:
     src: '{{ item }}.j2'
     dest: /etc/tinc/{{ tinc__netname }}/{{ item }}
-    mode: 0755
+    mode: '0755'
   loop:
     - tinc-up
     - tinc-down
@@ -128,7 +128,7 @@
   copy:
     src: fetch/{{ tinc__netname }}/
     dest: /etc/tinc/{{ tinc__netname }}/hosts/
-    mode: 0644
+    mode: '0644'
   notify:
     - reload tinc
 
@@ -151,6 +151,6 @@
     dest: /etc/ferm/ferm.d/tinc.conf
     owner: root
     group: adm
-    mode: 0644
+    mode: '0644'
   notify: reload ferm
   when: tinc__install_ferm_svc and tinc__allow_incoming_connections
