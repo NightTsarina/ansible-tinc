@@ -19,7 +19,7 @@
 - name: set daemon parameters in /etc/default/tinc
   ansible.builtin.lineinfile:
     dest: /etc/default/tinc
-    line: "EXTRA='-d -L'"
+    line: EXTRA='-d -L'
     regexp: '^EXTRA\s*='
     insertbefore: BOF
     create: false
@@ -35,7 +35,7 @@
 - name: add network to /etc/tinc/nets.boot
   ansible.builtin.lineinfile:
     dest: /etc/tinc/nets.boot
-    line: "{{ tinc__netname }}"
+    line: '{{ tinc__netname }}'
     mode: '0644'
     create: true
   notify:
@@ -81,7 +81,8 @@
   notify:
     - restart tinc
 
-# this is necessary because the public key will not be generated (non-interactively) if the private key already exists
+# this is necessary because the public key will not be generated
+# (non-interactively) if the private key already exists
 - name: delete private key and regenerate keypair
   ansible.builtin.file:
     path: /etc/tinc/{{ tinc__netname }}/rsa_key.priv
@@ -145,7 +146,7 @@
 
 - name: ensure tinc is started
   ansible.builtin.service:
-    name: "{{ tinc__service_name }}"
+    name: '{{ tinc__service_name }}'
     enabled: true
     state: started
 

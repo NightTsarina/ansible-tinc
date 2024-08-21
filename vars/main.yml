@@ -1,5 +1,7 @@
----
 # vim:ts=2:sw=2:et:ai:sts=2
+---
+# TODO: fix line length and remove disable/enable
+# yamllint disable rule:line-length
 tinc__hostvars: >-
   {{ dict(hostvars) | combine(tinc__external_hosts) | dict2items | json_query(
   '[?value.tinc__vpn_addresses].{
@@ -16,6 +18,7 @@ tinc__hostvars: >-
   ') | items2dict
   }}
 
+# yamllint enable rule:line-length
 tinc__other_public_addresses: >-
   {{
     tinc__hostvars.values() |

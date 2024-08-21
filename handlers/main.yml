@@ -3,12 +3,12 @@
 
 - name: reload tinc
   ansible.builtin.service:
-    name: "{{ tinc__service_name }}"
+    name: '{{ tinc__service_name }}'
     state: reloaded
 
 - name: restart tinc
   ansible.builtin.service:
-    name: "{{ tinc__service_name }}"
+    name: '{{ tinc__service_name }}'
     state: restarted
 
 - name: reload systemd

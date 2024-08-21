@@ -13,7 +13,7 @@
 
 - name: stop and disable tinc
   ansible.builtin.service:
-    name: "{{ tinc__service_name }}"
+    name: '{{ tinc__service_name }}'
     enabled: false
     state: stopped
 
@@ -25,7 +25,7 @@
 - name: delete nets.boot
   ansible.builtin.lineinfile:
     dest: /etc/tinc/nets.boot
-    line: "{{ tinc__netname }}"
+    line: '{{ tinc__netname }}'
     state: absent
 
 - name: delete systemd unit override

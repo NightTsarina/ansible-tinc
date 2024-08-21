@@ -24,18 +24,18 @@ tinc__netname: tinc
 tinc__external_hosts: {}
 
 # Per-host
-tinc__public_addresses: "{{ [ansible_host] }}"
+tinc__public_addresses: '{{ [ansible_host] }}'
 tinc__port: 655
 tinc__allow_incoming_connections: true
 
-tinc__vpn_interface: "{{ tinc__netname }}"
+tinc__vpn_interface: '{{ tinc__netname }}'
 
 # IP addresses to assign to the VPN interface.
 tinc__vpn_addresses: []
 
 # Export the local IP addresses as single-host networks.
 tinc__vpn_local_subnets:
-  "{{ tinc__vpn_addresses | ipaddr('address') | ipaddr('host') }}"
+  '{{ tinc__vpn_addresses | ipaddr("address") | ipaddr("host") }}'
 
 # Extra networks to export.
 tinc__vpn_extra_subnets:
